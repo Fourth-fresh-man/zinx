@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="9305025c-df49-470d-815f-a68962377829" name="Zinx">
+        <fileTransfer rootFolder="/home/wangbichao/software/go/src/zinx" accessType="SFTP" host="8.130.163.202" port="22" sshConfigId="2b63a4b9-3fc1-4174-bb74-e29ce1e4f9cb" sshConfig="aliyun">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" keepAliveTimeout="0" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
