@@ -1,6 +1,7 @@
 package znet
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"zinx/ziface"
@@ -16,6 +17,15 @@ type Server struct {
 	IP string
 	// 服务器port
 	Port int
+}
+
+func CallBackToClient(conn *net.TCPConn, data []byte, cnt int) error {
+	fmt.Println("[Conn Handle] CallbackToClient...")
+	if _, err := conn.Write(data[:cnt]); err != nil {
+		fmt.Println("write back buf err", err)
+		return errors.New("CallBackToClient error!")
+	}
+	return nil
 }
 
 func (s *Server) Start() {
@@ -35,6 +45,10 @@ func (s *Server) Start() {
 		}
 		fmt.Println("start Zinx server succ,",s.name)
 		fmt.Println("Listening.....")
+
+		var cid uint32
+		cid = 0
+
 		for {
 			conn, err := Listener.AcceptTCP()
 			if err!=nil {
@@ -42,22 +56,26 @@ func (s *Server) Start() {
 				continue
 			}
 
-			go func() {
-				for {
-					buf := make([]byte, 512)
-					cnt, err := conn.Read(buf)
-					if err!=nil {
-						fmt.Println("recv buf err", err)
-						continue
-					}
+			dealConn :=NewConnection(conn, cid, CallBackToClient)
+			cid++
+			go dealConn.Start()
 
-					fmt.Printf("recv client content=%s cnt=%d\n", buf, cnt)
-					if _, err := conn.Write(buf[:cnt]); err!=nil {
-						fmt.Println("write back err", err)
-						continue
-					}
-				}
-			}()
+			//go func() {
+			//	for {
+			//		buf := make([]byte, 512)
+			//		cnt, err := conn.Read(buf)
+			//		if err!=nil {
+			//			fmt.Println("recv buf err", err)
+			//			continue
+			//		}
+			//
+			//		fmt.Printf("recv client content=%s cnt=%d\n", buf, cnt)
+			//		if _, err := conn.Write(buf[:cnt]); err!=nil {
+			//			fmt.Println("write back err", err)
+			//			continue
+			//		}
+			//	}
+			//}()
 		}
 	}()
 
